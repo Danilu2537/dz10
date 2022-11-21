@@ -1,16 +1,47 @@
-# This is a sample Python script.
+"""
+Слишком кринжово получилось...
+Простите...
+"""
+from flask import Flask
+from utils import *
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+app = Flask(__name__)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+8 to toggle the breakpoint.
+@app.route("/")
+def view_all():
+    """
+    Выводит пользователю всех кандидатов
+    """
+    candidates = get_all()
+    text = ""
+    for item in candidates:
+        text += view_candidate(item)
+    return f"<pre>\n{text}\n</pre>"
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+@app.route("/candidates/<int:pk>")
+def view_by_pk(pk):
+    """
+    Выводит одного кандидата по порядковому номеру с аватаркой
+    """
+    candidate = get_by_pk(pk)
+    text = view_candidate(candidate)
+    img = candidate.get("picture")
+    return f"<img src={img}>\n\n<pre>{text}</pre>"
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+@app.route("/skills/<skill>")
+def view_by_skill(skill):
+    """
+    Выводит список кандидатов с нужным навыком
+    """
+    candidates = get_by_skill(skill)
+    text = ""
+    for item in candidates:
+        text += view_candidate(item)
+    return f"<pre>\n{text}\n</pre>"
+
+
+if __name__ == "__main__":
+    app.run()
